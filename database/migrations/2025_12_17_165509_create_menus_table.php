@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('menus', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('category_id')->constrained()->cascadeOnDelete();
             $table->string('nama');
-            $table->string('kategori')->nullable(); // <-- kolom kategori
             $table->integer('harga');
             $table->integer('harga_promo')->nullable();
             $table->date('promo_mulai')->nullable();

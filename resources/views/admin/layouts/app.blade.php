@@ -1,22 +1,16 @@
 <!DOCTYPE html>
-<html lang="id">
-
+<html lang="id" class="h-full">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@yield('title', 'Admin Gacoan')</title>
 
-    <title>@yield('title', 'Admin Dashboard')</title>
-
-    {{-- Tailwind --}}
+    {{-- Tailwind & Fonts --}}
     <script src="https://cdn.tailwindcss.com"></script>
-
-    {{-- Font --}}
     <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
-
-    {{-- Lucide --}}
+    
+    {{-- Icons & JS --}}
     <script src="https://unpkg.com/lucide@latest"></script>
-
-    {{-- Alpine.js --}}
     <script src="//unpkg.com/alpinejs" defer></script>
 
     <script>
@@ -26,7 +20,6 @@
                     fontFamily: { sans: ['Inter', 'sans-serif'] },
                     colors: {
                         gacoan: {
-                            100: '#fee2e2',
                             500: '#ef4444',
                             600: '#dc2626',
                             700: '#b91c1c',
@@ -36,75 +29,52 @@
             }
         }
     </script>
-
+    <style>
+        [x-cloak] { display: none !important; }
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+    </style>
     @stack('css')
 </head>
+<body class="bg-[#0f172a] font-sans antialiased h-full overflow-hidden" x-data="{ sidebarOpen: false }">
 
-<body class="bg-gray-100 font-sans min-h-screen flex flex-col">
-
-    {{-- HEADER --}}
-    @include('admin.partials.header')
-
-    <div class="flex flex-1 min-h-[calc(100vh-64px)]">
-        {{-- SIDEBAR --}}
+    <div class="flex h-screen">
+        {{-- 1. SIDEBAR --}}
         @include('admin.partials.sidebar')
 
-        {{-- MAIN CONTENT --}}
-        <main class="flex-1 p-4 sm:p-6 overflow-auto">
-            <div class="container mx-auto">
-                @yield('content')
-            </div>
-        </main>
+        {{-- 2. MAIN CONTENT AREA --}}
+        <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
+            
+            {{-- HEADER --}}
+            @include('admin.partials.header')
+
+            {{-- SCROLLABLE CONTENT --}}
+            <main class="flex-1 overflow-y-auto bg-[#0f172a]">
+                <div class="p-4 md:p-8">
+                    @yield('content')
+                </div>
+                
+                {{-- FOOTER --}}
+                @include('admin.partials.footer')
+            </main>
+        </div>
     </div>
 
-    {{-- FOOTER --}}
-    @include('admin.partials.footer')
-
-    {{-- TOAST --}}
-    <div class="fixed top-5 right-5 space-y-2 z-50">
+    {{-- Notifikasi Toast --}}
+    <div class="fixed bottom-5 right-5 z-[100] space-y-3">
         @if(session('success'))
-        <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 4000)"
-             class="bg-green-500 text-white px-4 py-3 rounded shadow-lg font-semibold">
-            {{ session('success') }}
-        </div>
-        @endif
-
-        @if($errors->any())
-        <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 5000)"
-             class="bg-red-500 text-white px-4 py-3 rounded shadow-lg font-semibold">
-            <ul class="list-disc pl-5">
-                @foreach($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
+        <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 4000)" x-transition
+             class="bg-emerald-500 text-white px-6 py-3 rounded-2xl shadow-2xl flex items-center gap-3 border border-emerald-400/20">
+            <i data-lucide="check-circle" class="w-5 h-5"></i>
+            <span class="font-bold text-sm tracking-wide">{{ session('success') }}</span>
         </div>
         @endif
     </div>
 
     <script>
         lucide.createIcons();
-
-        // Sidebar toggle mobile
-        document.addEventListener('DOMContentLoaded', () => {
-            const toggleBtn = document.getElementById('sidebar-toggle');
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('sidebar-overlay');
-
-            function openSidebar() {
-                sidebar.classList.remove('-translate-x-full');
-                overlay.classList.remove('hidden');
-            }
-            function closeSidebar() {
-                sidebar.classList.add('-translate-x-full');
-                overlay.classList.add('hidden');
-            }
-
-            toggleBtn?.addEventListener('click', openSidebar);
-            overlay?.addEventListener('click', closeSidebar);
-        });
     </script>
-
     @stack('js')
 </body>
-
 </html>

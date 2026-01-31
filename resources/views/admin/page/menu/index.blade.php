@@ -3,217 +3,132 @@
 @section('title', 'Menu Management')
 
 @section('content')
-<div class="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-6">
+<div class="min-h-screen bg-[#0f172a] p-4 md:p-8">
     {{-- Header Section --}}
-    <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
-        <div class="flex items-center gap-4">
-            <div class="p-3 bg-gradient-to-br from-gacoan-500 to-gacoan-600 rounded-xl shadow-lg">
-                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                </svg>
-            </div>
-            <div>
-                <h1 class="text-3xl font-bold text-white">Menu Management</h1>
-                <p class="text-slate-400 text-sm mt-1">Kelola menu restoran Anda</p>
-            </div>
+    <div class="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
+        <div>
+            <h1 class="text-2xl md:text-3xl font-extrabold text-white tracking-tight">Menu Management</h1>
+            <p class="text-slate-400 text-sm mt-1 flex items-center gap-2">
+                <span class="w-2 h-2 bg-gacoan-500 rounded-full animate-pulse"></span>
+                Kelola dan monitor daftar menu restoran Anda
+            </p>
         </div>
         
         <a href="{{ route('admin.menu.create') }}"
-           class="group relative inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-gacoan-600 to-gacoan-500 text-white rounded-xl shadow-lg hover:shadow-gacoan-500/50 transition-all duration-300 hover:scale-105">
-            <svg class="w-5 h-5 transition-transform group-hover:rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+           class="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-gradient-to-r from-gacoan-600 to-gacoan-500 text-white rounded-lg shadow-lg shadow-gacoan-500/20 hover:shadow-gacoan-500/40 transition-all duration-300 active:scale-95 group">
+            <svg class="w-5 h-5 group-hover:rotate-90 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
             </svg>
-            <span class="font-semibold">Tambah Menu</span>
+            <span class="font-semibold">Tambah Menu Baru</span>
         </a>
     </div>
 
     {{-- Stats Cards --}}
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div class="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-xl p-6 hover:border-blue-500/50 transition-all duration-300">
-            <div class="flex items-center gap-4">
-                <div class="p-3 bg-blue-500/20 rounded-lg">
-                    <svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                    </svg>
-                </div>
-                <div>
-                    <p class="text-slate-400 text-sm">Total Menu</p>
-                    <p class="text-2xl font-bold text-white">{{ $menus->total() }}</p>
-                </div>
-            </div>
-        </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+        @php
+            $stats = [
+                ['label' => 'Total Menu', 'value' => $menus->total(), 'icon' => 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z', 'color' => 'blue'],
+                ['label' => 'Menu Aktif', 'value' => $menus->where('is_active', true)->count(), 'icon' => 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z', 'color' => 'green'],
+                ['label' => 'Promo Aktif', 'value' => $menus->filter(fn($m) => $m->isPromoAktif())->count(), 'icon' => 'M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z', 'color' => 'purple']
+            ];
+        @endphp
 
-        <div class="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-xl p-6 hover:border-green-500/50 transition-all duration-300">
+        @foreach($stats as $stat)
+        <div class="bg-slate-800/40 backdrop-blur-md border border-slate-700/50 rounded-2xl p-5 hover:bg-slate-800/60 transition-all group">
             <div class="flex items-center gap-4">
-                <div class="p-3 bg-green-500/20 rounded-lg">
-                    <svg class="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                <div class="p-3 bg-{{ $stat['color'] }}-500/10 rounded-xl group-hover:scale-110 transition-transform">
+                    <svg class="w-6 h-6 text-{{ $stat['color'] }}-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $stat['icon'] }}"></path>
                     </svg>
                 </div>
                 <div>
-                    <p class="text-slate-400 text-sm">Menu Aktif</p>
-                    <p class="text-2xl font-bold text-white">{{ $menus->where('is_active', true)->count() }}</p>
+                    <p class="text-slate-400 text-xs font-medium uppercase tracking-wider">{{ $stat['label'] }}</p>
+                    <p class="text-2xl font-bold text-white">{{ $stat['value'] }}</p>
                 </div>
             </div>
         </div>
-
-        <div class="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-xl p-6 hover:border-purple-500/50 transition-all duration-300">
-            <div class="flex items-center gap-4">
-                <div class="p-3 bg-purple-500/20 rounded-lg">
-                    <svg class="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
-                    </svg>
-                </div>
-                <div>
-                    <p class="text-slate-400 text-sm">Promo Aktif</p>
-                    <p class="text-2xl font-bold text-white">{{ $menus->filter(fn($m) => $m->isPromoAktif())->count() }}</p>
-                </div>
-            </div>
-        </div>
+        @endforeach
     </div>
 
     {{-- Table Section --}}
-    <div class="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-xl shadow-2xl overflow-hidden">
+    <div class="bg-slate-800/30 backdrop-blur-sm border border-slate-700/50 rounded-2xl shadow-xl overflow-hidden">
         <div class="overflow-x-auto">
-            <table class="w-full min-w-[900px]">
-                <thead class="bg-slate-900/80">
-                    <tr>
-                        <th class="p-4 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">
-                            <div class="flex items-center gap-2">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                </svg>
-                                Gambar
-                            </div>
-                        </th>
-                        <th class="p-4 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">
-                            <div class="flex items-center gap-2">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
-                                </svg>
-                                Nama
-                            </div>
-                        </th>
-                        <th class="p-4 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">
-                            <div class="flex items-center gap-2">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path>
-                                </svg>
-                                Kategori
-                            </div>
-                        </th>
-                        <th class="p-4 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">
-                            <div class="flex items-center gap-2">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                </svg>
-                                Harga
-                            </div>
-                        </th>
-                        <th class="p-4 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">
-                            <div class="flex items-center gap-2">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                </svg>
-                                Status
-                            </div>
-                        </th>
-                        <th class="p-4 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">
-                            <div class="flex items-center gap-2">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
-                                </svg>
-                                Aksi
-                            </div>
-                        </th>
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-slate-900/50 border-b border-slate-700/50">
+                        <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Menu</th>
+                        <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest text-center">Kategori</th>
+                        <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Harga</th>
+                        <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest text-center">Status</th>
+                        <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest text-right">Aksi</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-slate-700/50">
+                <tbody class="divide-y divide-slate-700/30">
                     @forelse($menus as $menu)
-                    <tr class="hover:bg-slate-700/30 transition-colors duration-200">
-                        <td class="p-4">
-                            @if($menu->gambar)
-                                <div class="relative group">
-                                    <img src="{{ asset('storage/'.$menu->gambar) }}"
-                                         class="w-16 h-16 object-cover rounded-lg ring-2 ring-slate-600 group-hover:ring-gacoan-500 transition-all duration-300">
-                                    <div class="absolute inset-0 bg-black/50 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"></path>
-                                        </svg>
+                    <tr class="group hover:bg-slate-700/20 transition-colors">
+                        {{-- Info Menu & Gambar --}}
+                        <td class="px-6 py-4">
+                            <div class="flex items-center gap-4">
+                                @if($menu->gambar)
+                                    <div class="h-14 w-14 flex-shrink-0 overflow-hidden rounded-xl ring-2 ring-slate-700 group-hover:ring-gacoan-500/50 transition-all">
+                                        <img src="{{ Storage::url($menu->gambar) }}" class="h-full w-full object-cover shadow-inner" alt="{{ $menu->nama }}">
                                     </div>
+                                @else
+                                    <div class="h-14 w-14 flex-shrink-0 bg-slate-700 rounded-xl flex items-center justify-center text-slate-500">
+                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                    </div>
+                                @endif
+                                <div>
+                                    <div class="text-white font-bold group-hover:text-gacoan-400 transition-colors">{{ $menu->nama }}</div>
+                                    <div class="text-slate-500 text-xs mt-0.5">ID: #{{ str_pad($menu->id, 4, '0', STR_PAD_LEFT) }}</div>
                                 </div>
-                            @else
-                                <div class="w-16 h-16 bg-slate-700 rounded-lg flex items-center justify-center text-slate-500">
-                                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                    </svg>
-                                </div>
-                            @endif
+                            </div>
                         </td>
-                        <td class="p-4">
-                            <p class="font-semibold text-white">{{ $menu->nama }}</p>
-                        </td>
-                        <td class="p-4">
-                            <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-slate-700 text-slate-300 rounded-lg text-xs font-medium">
-                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
-                                </svg>
-                                {{ $menu->kategori ?? 'Uncategorized' }}
+
+                        {{-- Kategori --}}
+                        <td class="px-6 py-4 text-center">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-700 text-slate-300 border border-slate-600">
+                                {{ $menu->kategori ?? 'Umum' }}
                             </span>
                         </td>
-                        <td class="p-4">
-                            <div class="flex flex-col gap-1">
-                                <span class="text-white font-bold">Rp {{ number_format($menu->harga_final, 0, ',', '.') }}</span>
+
+                        {{-- Harga --}}
+                        <td class="px-6 py-4">
+                            <div class="flex flex-col">
+                                <span class="text-white font-mono font-bold">Rp{{ number_format($menu->harga_final, 0, ',', '.') }}</span>
                                 @if($menu->isPromoAktif())
-                                    <span class="inline-flex items-center gap-1 text-xs text-green-400 font-medium">
-                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path>
-                                        </svg>
-                                        Promo
+                                    <span class="text-[10px] text-green-400 font-bold uppercase tracking-tighter flex items-center gap-1">
+                                        <span class="w-1 h-1 bg-green-400 rounded-full animate-ping"></span> Flash Sale
                                     </span>
                                 @endif
                             </div>
                         </td>
-                        <td class="p-4">
-                            <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold
+
+                        {{-- Status --}}
+                        <td class="px-6 py-4 text-center">
+                            <span class="inline-flex items-center px-3 py-1 rounded-lg text-[11px] font-bold uppercase tracking-wider
                                 {{ $menu->is_active 
-                                    ? 'bg-green-500/20 text-green-400 ring-1 ring-green-500/50' 
-                                    : 'bg-red-500/20 text-red-400 ring-1 ring-red-500/50' }}">
-                                @if($menu->is_active)
-                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                    </svg>
-                                    Aktif
-                                @else
-                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                    </svg>
-                                    Nonaktif
-                                @endif
+                                    ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20' 
+                                    : 'bg-rose-500/10 text-rose-500 border border-rose-500/20' }}">
+                                {{ $menu->is_active ? 'Available' : 'Sold Out' }}
                             </span>
                         </td>
-                        <td class="p-4">
-                            <div class="flex items-center gap-2">
+
+                        {{-- Aksi --}}
+                        <td class="px-6 py-4 text-right">
+                            <div class="flex items-center justify-end gap-2">
                                 <a href="{{ route('admin.menu.edit', $menu) }}"
-                                   class="group inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-500/20 text-blue-400 rounded-lg text-xs font-medium hover:bg-blue-500 hover:text-white transition-all duration-200">
-                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                                    </svg>
-                                    Edit
+                                   class="p-2 bg-blue-500/10 text-blue-400 hover:bg-blue-500 hover:text-white rounded-lg transition-all"
+                                   title="Edit Menu">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
                                 </a>
 
-                                <form action="{{ route('admin.menu.destroy', $menu) }}"
-                                      method="POST"
-                                      onsubmit="return confirm('Yakin ingin menghapus menu ini?')"
-                                      class="inline">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit"
-                                            class="group inline-flex items-center gap-1.5 px-3 py-1.5 bg-red-500/20 text-red-400 rounded-lg text-xs font-medium hover:bg-red-500 hover:text-white transition-all duration-200">
-                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                                        </svg>
-                                        Hapus
+                                <form action="{{ route('admin.menu.destroy', $menu) }}" method="POST" class="inline delete-form">
+                                    @csrf @method('DELETE')
+                                    <button type="button" onclick="confirmDelete(this)"
+                                            class="p-2 bg-rose-500/10 text-rose-400 hover:bg-rose-500 hover:text-white rounded-lg transition-all"
+                                            title="Hapus Menu">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                                     </button>
                                 </form>
                             </div>
@@ -221,17 +136,13 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="6" class="p-12 text-center">
-                            <div class="flex flex-col items-center gap-4">
-                                <div class="p-4 bg-slate-700/50 rounded-full">
-                                    <svg class="w-12 h-12 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
-                                    </svg>
+                        <td colspan="5" class="px-6 py-20 text-center">
+                            <div class="flex flex-col items-center">
+                                <div class="w-20 h-20 bg-slate-800 rounded-full flex items-center justify-center mb-4 border border-slate-700">
+                                    <svg class="w-10 h-10 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path></svg>
                                 </div>
-                                <div>
-                                    <p class="text-slate-400 text-lg font-medium">Belum ada menu</p>
-                                    <p class="text-slate-500 text-sm mt-1">Mulai tambahkan menu pertama Anda</p>
-                                </div>
+                                <h3 class="text-white font-bold text-lg">Belum ada data</h3>
+                                <p class="text-slate-500 text-sm">Klik tombol "Tambah Menu Baru" untuk memulai.</p>
                             </div>
                         </td>
                     </tr>
@@ -242,32 +153,53 @@
 
         {{-- Pagination --}}
         @if($menus->hasPages())
-        <div class="p-4 bg-slate-900/50 border-t border-slate-700">
+        <div class="px-6 py-4 bg-slate-900/30 border-t border-slate-700/50">
             {{ $menus->links() }}
         </div>
         @endif
     </div>
 </div>
 
-{{-- Notyf JS --}}
-<script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
+{{-- Script & Style --}}
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
+<script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
     const notyf = new Notyf({ 
-        duration: 4000, 
+        duration: 3000, 
         position: { x: 'right', y: 'top' },
-        dismissible: true
+        ripple: false,
+        types: [{ type: 'success', background: '#10b981' }]
     });
 
-    @if ($errors->any())
-        @foreach ($errors->all() as $error)
-            notyf.error('{{ $error }}');
-        @endforeach
-    @endif
+    @if (session('success')) notyf.success('{{ session('success') }}'); @endif
+    @if ($errors->any()) notyf.error('Terjadi kesalahan, periksa inputan Anda'); @endif
 
-    @if (session('success'))
-        notyf.success('{{ session('success') }}');
-    @endif
+    function confirmDelete(button) {
+        Swal.fire({
+            title: 'Hapus Menu?',
+            text: "Data yang dihapus tidak bisa dikembalikan!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ef4444',
+            cancelButtonColor: '#334155',
+            confirmButtonText: 'Ya, Hapus!',
+            cancelButtonText: 'Batal',
+            background: '#1e293b',
+            color: '#fff'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                button.closest('form').submit();
+            }
+        })
+    }
 </script>
+
+<style>
+    /* Kustomisasi pagination laravel agar masuk ke tema dark */
+    .pagination { @apply flex gap-1; }
+    .page-item .page-link { @apply bg-slate-800 border-slate-700 text-slate-400 rounded-lg; }
+    .page-item.active .page-link { @apply bg-gacoan-600 border-gacoan-600 text-white; }
+</style>
 @endsection

@@ -5,28 +5,36 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use App\Models\Menu;
 use App\Models\Category;
+use App\Models\Order;
+use App\Models\User;
 
 class BerandaController extends Controller
 {
     public function index()
     {
-        // Ambil semua menu aktif beserta kategori
-        $menus = Menu::with('category')->where('is_active', true)->get();
+        $stats = [
+            'menu_count'  => Menu::where('is_active', true)->count(),
+            'order_count' => Order::count(),
+            'user_count'  => User::count(),
+        ];
 
-        // Ambil kategori beserta jumlah menu aktif
-        $categories = Category::withCount(['menus' => function ($q) {
-            $q->where('is_active', true);
-        }])->get();
+        $categories = Category::withCount([
+            'menus' => function ($q) {
+                $q->where('is_active', true);
+            }
+        ])->get();
 
-        // Menu populer: best seller atau promo aktif
         $popular_menus = Menu::with('category')
             ->where('is_active', true)
-            ->where(function ($q) {
-                $q->where('is_best_seller', true)
-                  ->orWhereNotNull('harga_promo');
-            })
+            ->orderByDesc('is_best_seller')
+            ->latest()
+            ->limit(6)
             ->get();
 
-        return view('user.page.beranda.beranda', compact('menus', 'categories', 'popular_menus'));
+        return view('user.page.beranda.beranda', compact(
+            'stats',
+            'categories',
+            'popular_menus'
+        ));
     }
 }
